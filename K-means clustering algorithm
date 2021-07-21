@@ -1,4 +1,34 @@
+#importing the necessary libraries
 import numpy as np
-from sklearn.cluster import MeanShift
+from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
-iris_df = read_csv('Iris.csv')
+import pandas as pd
+
+#reading the dataset using pandas
+iris_df = pd.read_csv('Iris.csv')
+iris_df = iris_df.set_index(['Id'])
+
+#selecting features to train the model and visualising the dataset
+x = iris_df.iloc[:,[0,1,2,3]].values
+plt.scatter(x[:,0], x[:,1])
+
+#using the elbow method to find the optimal number of clusters in the dataset
+error = []
+for i in range(1,11):
+    kmeans = KMeans(n_clusters = i).fit(x)
+    kmeans.fit(x)
+    error.append(kmeans.inertia_)  
+plt.plot(range(1,11), error)
+plt.title('Elbow method')
+plt.xlabel('No. of clusters')
+plt.ylabel('Error')
+plt.show()
+
+#training the model and predicting the result
+kmeans = KMeans(n_clusters = 3)
+y = kmeans.fit_predict(x)
+print(y)
+kmeans.cluster_centers_
+
+#visualising clustering
+plt.scatter(x[:,0], x[:,1], c=y, cmap='rainbow')
